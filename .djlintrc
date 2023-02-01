@@ -1,0 +1,12 @@
+{
+  "indent": "2",
+  "format_css": true,
+  "format_js": true,
+  "blank_line_before_tag": "block",
+  "css": {
+    "indent_size": 2
+  },
+  "js": {
+    "indent_size": 2
+  }
+}
