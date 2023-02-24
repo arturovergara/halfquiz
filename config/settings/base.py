@@ -25,7 +25,6 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    "crispy_forms",
     "widget_tweaks",
 ]
 
@@ -64,10 +63,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-# FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 # Admin
