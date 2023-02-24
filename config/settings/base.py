@@ -24,7 +24,9 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    "crispy_forms",
+]
 
 LOCAL_APPS = [
     "apps.quizmaker",
@@ -61,6 +63,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+
+# FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 # Admin
