@@ -29,9 +29,10 @@
                   <td>{{ topic.name }}</td>
                   <td>{{ topic.description }}</td>
                   <td class="text-right">
-                    <button class="btn btn-secondary" type="button">
+                    <a href="{% url 'quizmaker:topic_update' topic.id %}"
+                       class="btn btn-secondary">
                       <i class="bx bxs-edit-alt"></i>
-                    </button>
+                    </a>
                     <button class="btn btn-danger"
                             type="button"
                             onclick="deleteTopic({{ topic.id }})">

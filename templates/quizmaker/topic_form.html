@@ -1,5 +1,6 @@
 {% extends "quizmaker/base.html" %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block content %}
   <div class="container-fluid">
@@ -10,20 +11,17 @@
         </div>
         <div class="card">
           <h2 class="card-title flex-grow-1">Topic Registration</h2>
-          <form action="{% url 'quizmaker:topic_create' %}" method="post">
+          <form method="post">
             <div class="form-group">
               <label for="id_name" class="required">Name</label>
-              <input type="text"
-                     class="form-control"
-                     id="id_name"
-                     name="name"
-                     placeholder="Name"
-                     required="required"/>
+              {% render_field form.name class+="form-control" %}
             </div>
             <div class="form-group">
               <label for="id_description" class="required">Description</label>
-              <textarea id="id_description" name="description" class="form-control" rows="4"></textarea>
+              {% render_field form.description rows="4" class+="form-control" %}
             </div>
+            {# Include the hidden fields in the form #}
+            {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
             {% csrf_token %}
             <input class="btn btn-primary btn-block" type="submit" value="Submit Topic" />
           </form>
