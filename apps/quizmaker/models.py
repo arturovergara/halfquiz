@@ -24,6 +24,12 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.statement}"
 
+    @property
+    def time_seconds(self):
+        seconds = (self.time / 1000) % 60
+
+        return int(seconds)
+
 
 class Option(models.Model):
     text = models.CharField(max_length=100)

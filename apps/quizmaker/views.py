@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import TopicForm
-from .models import Topic
+from .models import Question, Topic
 
 
 class TopicListView(ListView):
@@ -34,3 +34,8 @@ class TopicUpdateView(SuccessMessageMixin, UpdateView):
     form_class = TopicForm
     success_url = reverse_lazy("quizmaker:topic_list")
     success_message = "Topic was updated successfully!"
+
+
+class QuestionListView(ListView):
+    model = Question
+    context_object_name = "questions"
