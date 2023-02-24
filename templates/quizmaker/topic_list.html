@@ -1,53 +1,61 @@
-{% extends "quizmaker/base.html" %} {% block content %}
-<div class="container-fluid">
-  <div class="row row-eq-spacing-lg">
-    <div class="col">
-      <div class="content">
-        <h1 class="content-title">Topics</h1>
-      </div>
-      <div class="card">
-        <h2 class="card-title">Topic List</h2>
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th class="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for topic in topics %}
-            <tr>
-              <th>{{ forloop.counter }}</th>
-              <td>{{ topic.name }}</td>
-              <td>{{ topic.description }}</td>
-              <td class="text-right">
-                <button class="btn btn-danger" type="button">Delete</button>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <div class="content">
-        <div class="fake-content"></div>
-        <div class="fake-content w-150"></div>
+{% extends "quizmaker/base.html" %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row row-eq-spacing-lg">
+      <div class="col">
+        <div class="content">
+          <h1 class="content-title">Topics</h1>
+        </div>
+        <div class="card">
+          <div class="d-flex">
+            <h2 class="card-title flex-grow-1">Topic List</h2>
+            <a href="#" class="btn btn-success text-white">New Topic</a>
+          </div>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for topic in topics %}
+                <tr>
+                  <th>{{ forloop.counter }}</th>
+                  <td>{{ topic.name }}</td>
+                  <td>{{ topic.description }}</td>
+                  <td class="text-right">
+                    <button class="btn btn-secondary" type="button">
+                      <i class="bx bxs-edit-alt"></i>
+                    </button>
+                    <button class="btn btn-danger" type="button">
+                      <i class="bx bxs-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% endblock content %} {% block morescripts %}
-<script type="text/javascript">
-  // Toasts a default alert
-  function toastAlert() {
-    var alertContent =
-      "This is a default alert with <a href='#' class='alert-link'>a link</a> being toasted.";
-    // Built-in function
-    halfmoon.initStickyAlert({
-      content: alertContent,
-      title: "Toast!",
-    });
-  }
-</script>
+{% endblock content %}
+
+{% block morescripts %}
+  <script type="text/javascript">
+    // Toasts a default alert
+    function toastAlert() {
+      var alertContent =
+        "This is a default alert with <a href='#' class='alert-link'>a link</a> being toasted.";
+      // Built-in function
+      halfmoon.initStickyAlert({
+        content: alertContent,
+        title: "Toast!",
+      });
+    }
+  </script>
 {% endblock morescripts %}
