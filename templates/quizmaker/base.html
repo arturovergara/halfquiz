@@ -59,6 +59,9 @@
     <!-- Sidebar end -->
     <!-- Content wrapper start -->
     <div class="content-wrapper">
+      {% if messages %}
+        {% include "partials/message_notification_toast.html" %}
+      {% endif %}
 
       {% block content %}
       {% endblock content %}

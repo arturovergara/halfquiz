@@ -1,0 +1,11 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+      halfmoon.initStickyAlert({
+        content: '{{ message }}',
+        title: "{{ message.tags|capfirst }}",
+        alertType: "alert-{{ message.tags }}",
+      });
+    {% endfor %}
+  });
+</script>
