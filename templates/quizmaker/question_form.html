@@ -1,0 +1,37 @@
+{% extends "quizmaker/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row row-eq-spacing-lg">
+      <div class="col">
+        <div class="content">
+          <h1 class="content-title">Question Registration</h1>
+        </div>
+        <div class="card">
+          <h2 class="card-title flex-grow-1">Question Form</h2>
+          <form method="post">
+            <div class="form-group">
+              <label for="id_statement" class="required">Statement</label>
+              {% render_field form.statement class+="form-control" %}
+            </div>
+            <div class="form-group">
+              <label for="id_topic" class="required">Topic</label>
+              {% render_field form.topic class+="form-control" %}
+            </div>
+            <div class="form-group">
+              <label for="id_time" class="required">Time (ms)</label>
+              {% render_field form.time class+="form-control" %}
+            </div>
+            {# Include the hidden fields in the form #}
+            {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
+            {% csrf_token %}
+            <input class="btn btn-primary btn-block"
+                   type="submit"
+                   value="Submit Question"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

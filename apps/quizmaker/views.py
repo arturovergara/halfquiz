@@ -4,7 +4,7 @@ from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .forms import TopicForm
+from .forms import QuestionForm, TopicForm
 from .models import Question, Topic
 
 
@@ -39,3 +39,10 @@ class TopicUpdateView(SuccessMessageMixin, UpdateView):
 class QuestionListView(ListView):
     model = Question
     context_object_name = "questions"
+
+
+class QuestionCreateView(SuccessMessageMixin, CreateView):
+    model = Question
+    form_class = QuestionForm
+    success_url = reverse_lazy("quizmaker:question_list")
+    success_message = "Question was created successfully!"

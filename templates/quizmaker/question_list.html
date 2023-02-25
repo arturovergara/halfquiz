@@ -10,7 +10,8 @@
         <div class="card">
           <div class="d-flex">
             <h2 class="card-title flex-grow-1">Question List</h2>
-            <a href="#" class="btn btn-success text-white">New Question</a>
+            <a href="{% url 'quizmaker:question_create' %}"
+               class="btn btn-success text-white">New Question</a>
           </div>
           <table class="table table-bordered table-striped">
             <thead>
