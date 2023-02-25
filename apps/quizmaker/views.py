@@ -46,3 +46,10 @@ class QuestionCreateView(SuccessMessageMixin, CreateView):
     form_class = QuestionForm
     success_url = reverse_lazy("quizmaker:question_list")
     success_message = "Question was created successfully!"
+
+
+class QuestionUpdateView(SuccessMessageMixin, UpdateView):
+    model = Question
+    form_class = QuestionForm
+    success_url = reverse_lazy("quizmaker:question_list")
+    success_message = "Question was updated successfully!"

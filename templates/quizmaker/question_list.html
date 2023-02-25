@@ -31,7 +31,8 @@
                   <td>{{ question.topic }}</td>
                   <td>{{ question.time_seconds }}s</td>
                   <td class="text-right">
-                    <a href="#" class="btn btn-secondary">
+                    <a href="{% url 'quizmaker:question_update' question.id %}"
+                       class="btn btn-secondary">
                       <i class="bx bxs-edit-alt"></i>
                     </a>
                     <button class="btn btn-danger"
