@@ -71,7 +71,7 @@
   <script>
     function deleteQuestion(questionId) {
       const deleteQuestionForm = document.getElementById('delete-question-form');
-      const action = "{% url 'quizmaker:topic_delete' 12345 %}"
+      const action = "{% url 'quizmaker:question_delete' 12345 %}"
 
       deleteQuestionForm.action = action.replace(/12345/, questionId);
       halfmoon.toggleModal('delete-question-modal');

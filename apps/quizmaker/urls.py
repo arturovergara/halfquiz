@@ -4,6 +4,7 @@ from django.views.generic import RedirectView
 
 from .views import (
     QuestionCreateView,
+    QuestionDeleteView,
     QuestionListView,
     QuestionUpdateView,
     TopicCreateView,
@@ -18,6 +19,11 @@ urlpatterns = [
     path("topics/<int:pk>/edit/", TopicUpdateView.as_view(), name="topic_update"),
     path("topics/add/", TopicCreateView.as_view(), name="topic_create"),
     path("topics/", TopicListView.as_view(), name="topic_list"),
+    path(
+        "questions/<int:pk>/delete/",
+        QuestionDeleteView.as_view(),
+        name="question_delete",
+    ),
     path(
         "questions/<int:pk>/edit/", QuestionUpdateView.as_view(), name="question_update"
     ),

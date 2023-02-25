@@ -48,6 +48,15 @@ class QuestionCreateView(SuccessMessageMixin, CreateView):
     success_message = "Question was created successfully!"
 
 
+class QuestionDeleteView(SuccessMessageMixin, DeleteView):
+    model = Question
+    success_url = reverse_lazy("quizmaker:question_list")
+    success_message = "Question was deleted successfully!"
+
+    def get(self, request, *args, **kwargs):
+        raise Http404("Only POST method available")
+
+
 class QuestionUpdateView(SuccessMessageMixin, UpdateView):
     model = Question
     form_class = QuestionForm
