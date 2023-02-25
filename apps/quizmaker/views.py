@@ -4,7 +4,7 @@ from django.http.response import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .forms import QuestionForm, TopicForm
+from .forms import OptionFormSet, QuestionForm, TopicForm
 from .models import Question, Topic
 
 
@@ -47,6 +47,27 @@ class QuestionCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("quizmaker:question_list")
     success_message = "Question was created successfully!"
 
+    def get_context_data(self, **kwargs):
+        context_data = super(QuestionCreateView, self).get_context_data(**kwargs)
+        context_data["option_formset"] = (
+            OptionFormSet(self.request.POST) if self.request.POST else OptionFormSet()
+        )
+
+        return context_data
+
+    def form_valid(self, form):
+        context_data = self.get_context_data(form=form)
+        formset = context_data["option_formset"]
+
+        if not formset.is_valid():
+            return super(QuestionCreateView, self).form_invalid(form)
+
+        response = super(QuestionCreateView, self).form_valid(form)
+        formset.instance = self.object
+        formset.save()
+
+        return response
+
 
 class QuestionDeleteView(SuccessMessageMixin, DeleteView):
     model = Question
@@ -62,3 +83,26 @@ class QuestionUpdateView(SuccessMessageMixin, UpdateView):
     form_class = QuestionForm
     success_url = reverse_lazy("quizmaker:question_list")
     success_message = "Question was updated successfully!"
+
+    def get_context_data(self, **kwargs):
+        context_data = super(QuestionUpdateView, self).get_context_data(**kwargs)
+        context_data["option_formset"] = (
+            OptionFormSet(self.request.POST, instance=self.object)
+            if self.request.POST
+            else OptionFormSet(instance=self.object)
+        )
+
+        return context_data
+
+    def form_valid(self, form):
+        context_data = self.get_context_data(form=form)
+        formset = context_data["option_formset"]
+
+        if not formset.is_valid():
+            return super(QuestionUpdateView, self).form_invalid(form)
+
+        response = super(QuestionUpdateView, self).form_valid(form)
+        formset.instance = self.object
+        formset.save()
+
+        return response

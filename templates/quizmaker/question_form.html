@@ -2,6 +2,10 @@
 {% load widget_tweaks %}
 
 {% block content %}
+  {% if form.errors %}{{ form.errors }}{% endif %}
+  {% if option_formset.errors %}
+    {% with formset=option_formset %}{{ formset.errors }}{% endwith %}
+  {% endif %}
   <div class="container-fluid">
     <div class="row row-eq-spacing-lg">
       <div class="col">
@@ -22,6 +26,36 @@
             <div class="form-group">
               <label for="id_time" class="required">Time (ms)</label>
               {% render_field form.time class+="form-control" %}
+            </div>
+            <div>
+              {{ option_formset.management_form }}
+              <p>Options</p>
+              <div id="options-container">
+                {% for option_form in option_formset.forms %}
+                  <div class="input-group mb-20">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">
+                        <div class="custom-checkbox">
+                          {% render_field option_form.is_right %}
+                          <label for="{{ option_form.is_right.id_for_label }}" class="blank"></label>
+                        </div>
+                      </div>
+                    </div>
+                    {% render_field option_form.text class+="form-control" %}
+                    <div class="input-group-append">
+                      <div class="input-group-text bg-danger">
+                        <i class="bx bxs-trash-alt bx-md mr-10"></i>
+                        <div class="custom-checkbox">
+                          {% render_field option_form.DELETE %}
+                          <label for="{{ option_form.DELETE.id_for_label }}" class="blank"></label>
+                        </div>
+                      </div>
+                    </div>
+                    {# Include the hidden fields in the form of the formset #}
+                    {% for hidden_field in option_form.hidden_fields %}{{ hidden_field }}{% endfor %}
+                  </div>
+                {% endfor %}
+              </div>
             </div>
             {# Include the hidden fields in the form #}
             {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
