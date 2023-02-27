@@ -29,7 +29,7 @@
             </div>
             <div>
               {{ option_formset.management_form }}
-              <p>Options</p>
+              <h3 class="card-title flex-grow-1">Options</h3>
               <div id="options-container">
                 {% for option_form in option_formset.forms %}
                   <div class="input-group mb-20">
@@ -57,6 +57,32 @@
                 {% endfor %}
               </div>
             </div>
+            <div id="empty-form" class="d-none">
+              <div class="input-group mb-20">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <div class="custom-checkbox">
+                      {% render_field option_formset.empty_form.is_right %}
+                      <label for="{{ option_formset.empty_form.is_right.id_for_label }}"
+                             class="blank"></label>
+                    </div>
+                  </div>
+                </div>
+                {% render_field option_formset.empty_form.text class+="form-control" %}
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" role="button">
+                    <i class="bx bxs-x-circle"></i>
+                  </button>
+                </div>
+                {# Include the hidden fields in the form of the formset #}
+                {% for hidden_field in option_formset.empty_form.hidden_fields %}{{ hidden_field }}{% endfor %}
+              </div>
+            </div>
+            <div class="mb-20">
+              <button type="button"
+                      class="btn btn-success text-white"
+                      onclick="addOption();">Add Option</button>
+            </div>
             {# Include the hidden fields in the form #}
             {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
             {% csrf_token %}
@@ -69,3 +95,28 @@
     </div>
   </div>
 {% endblock content %}
+
+{% block morescripts %}
+  <script>
+    const questionForm = document.querySelector('form');
+    const optionsInput = document.getElementById('id_options');
+    const optionsContainer = document.getElementById('options-container');
+    const totalFormsInput = document.getElementById('id_options-TOTAL_FORMS');
+    const initialFormsInput = document.getElementById('id_options_INITIAL_FORM');
+
+    function addOption() {
+      const emptyFormElement = document.getElementById('empty-form');
+      const newOptionForm = emptyFormElement.firstElementChild.cloneNode(true);
+      const currentFormCount = optionsContainer.children.length;
+      const prefixRegex = new RegExp('__prefix__', 'g');
+
+      // Make option statement required
+      newOptionForm.querySelector('input[type=text]').required = true;
+
+      // Replace with corresponding ID
+      newOptionForm.innerHTML = newOptionForm.innerHTML.replace(prefixRegex, currentFormCount);
+      optionsContainer.appendChild(newOptionForm);
+      totalFormsInput.value = currentFormCount + 1;
+    }
+  </script>
+{% endblock morescripts %}
