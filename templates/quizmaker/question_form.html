@@ -43,13 +43,19 @@
                     </div>
                     {% render_field option_form.text class+="form-control" %}
                     <div class="input-group-append">
-                      <div class="input-group-text bg-danger">
-                        <i class="bx bxs-trash-alt bx-md mr-10"></i>
-                        <div class="custom-checkbox">
-                          {% render_field option_form.DELETE %}
-                          <label for="{{ option_form.DELETE.id_for_label }}" class="blank"></label>
+                      {% if not option_form.empty_permitted %}
+                        <div class="input-group-text bg-danger">
+                          <i class="bx bxs-trash-alt bx-md mr-10"></i>
+                          <div class="custom-checkbox">
+                            {% render_field option_form.DELETE %}
+                            <label for="{{ option_form.DELETE.id_for_label }}" class="blank"></label>
+                          </div>
                         </div>
-                      </div>
+                      {% else %}
+                        <button type="button" class="btn btn-secondary" onclick="removeOption(this);">
+                          <i class="bx bxs-x-circle"></i>
+                        </button>
+                      {% endif %}
                     </div>
                     {# Include the hidden fields in the form of the formset #}
                     {% for hidden_field in option_form.hidden_fields %}{{ hidden_field }}{% endfor %}
@@ -70,7 +76,7 @@
                 </div>
                 {% render_field option_formset.empty_form.text class+="form-control" %}
                 <div class="input-group-append">
-                  <button class="btn btn-secondary" role="button">
+                  <button type="button" class="btn btn-secondary" onclick="removeOption(this);">
                     <i class="bx bxs-x-circle"></i>
                   </button>
                 </div>
@@ -102,7 +108,7 @@
     const optionsInput = document.getElementById('id_options');
     const optionsContainer = document.getElementById('options-container');
     const totalFormsInput = document.getElementById('id_options-TOTAL_FORMS');
-    const initialFormsInput = document.getElementById('id_options_INITIAL_FORM');
+    const initialFormsInput = document.getElementById('id_options-INITIAL_FORMS');
 
     function addOption() {
       const emptyFormElement = document.getElementById('empty-form');
@@ -117,6 +123,36 @@
       newOptionForm.innerHTML = newOptionForm.innerHTML.replace(prefixRegex, currentFormCount);
       optionsContainer.appendChild(newOptionForm);
       totalFormsInput.value = currentFormCount + 1;
+    }
+
+    function removeOption(event) {
+      const optionElement = event.parentElement.parentElement;
+      const currentFormCount = optionsContainer.children.length;
+
+      optionsContainer.removeChild(optionElement);
+      totalFormsInput.value = currentFormCount - 1;
+
+      // Update all another forms
+      updateCurrentOptionForms();
+    }
+
+    function updateCurrentOptionForms() {
+      const optionsToUpdateElements = [...optionsContainer.children].slice(initialFormsInput.value);
+      const indexRegex = new RegExp('-\\d+-', 'g');
+      let optionFormCount = initialFormsInput.value;
+
+      console.log(optionFormCount);
+
+      for (const optionForm of optionsToUpdateElements) {
+        const optionFormInputs = optionForm.getElementsByTagName('input');
+
+        for (const optionInput of optionFormInputs) {
+          optionInput.id = optionInput.id.replace(indexRegex, `-${optionFormCount}-`);
+          optionInput.name = optionInput.name.replace(indexRegex, `-${optionFormCount}-`);
+        }
+
+        optionFormCount++;
+      }
     }
   </script>
 {% endblock morescripts %}
