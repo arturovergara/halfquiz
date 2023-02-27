@@ -1,7 +1,7 @@
 # Django Imports
 from django.contrib import admin
 
-from .models import Option, Question, Quiz, Topic
+from .models import Game, Option, Question, Quiz, Topic
 
 
 class OptionInline(admin.TabularInline):
@@ -18,3 +18,4 @@ admin.site.register(Question, QuestionAdmin)
 admin.site.register(Option)
 admin.site.register(Quiz)
 admin.site.register(Topic)
+admin.site.register(Game)
