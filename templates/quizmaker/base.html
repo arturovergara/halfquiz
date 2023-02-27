@@ -1,5 +1,4 @@
 {% extends "base_generic.html" %}
-{% load static %}
 
 {% block layout %}
   <!-- Page wrapper start -->
@@ -19,14 +18,6 @@
         </button>
       </div>
       <span class="navbar-brand ml-10 ml-sm-20">Halfquiz</span>
-      <div class="navbar-content ml-auto">
-        <button class="btn btn-action mr-5"
-                type="button"
-                onclick="halfmoon.toggleDarkMode()">
-          <i class="fa fa-moon-o" aria-hidden="true"></i>
-          <span class="sr-only">Toggle dark mode</span>
-        </button>
-      </div>
     </nav>
     <!-- Navbar end -->
     <!-- Sidebar overlay -->
@@ -34,28 +25,30 @@
     <!-- Sidebar start -->
     <div class="sidebar">
       <div class="sidebar-menu">
-        <h5 class="sidebar-title">Dashboard</h5>
-        <div class="sidebar-divider"></div>
-        <a href="{% url 'quizmaker:topic_list' %}"
-           class="sidebar-link sidebar-link-with-icon active">
-          <span class="sidebar-icon">
-            <i class="bx bxs-category" aria-hidden="true"></i>
-          </span>
-          Topics
-        </a>
-        <a href="{% url 'quizmaker:question_list' %}"
-           class="sidebar-link sidebar-link-with-icon">
-          <span class="sidebar-icon">
-            <i class="bx bx-question-mark" aria-hidden="true"></i>
-          </span>
-          Questions
-        </a>
-        <a href="#" class="sidebar-link sidebar-link-with-icon">
-          <span class="sidebar-icon">
-            <i class="bx bxs-calendar-check" aria-hidden="true"></i>
-          </span>
-          Quizzes
-        </a>
+        {% with request.resolver_match.url_name as url_name %}
+          <h5 class="sidebar-title">Dashboard</h5>
+          <div class="sidebar-divider"></div>
+          <a href="{% url 'quizmaker:topic_list' %}"
+             class="sidebar-link sidebar-link-with-icon {% if 'topic' in url_name %} active{% endif %}">
+            <span class="sidebar-icon">
+              <i class="bx bxs-category" aria-hidden="true"></i>
+            </span>
+            Topics
+          </a>
+          <a href="{% url 'quizmaker:question_list' %}"
+             class="sidebar-link sidebar-link-with-icon {% if 'question' in url_name %} active{% endif %}">
+            <span class="sidebar-icon">
+              <i class="bx bx-question-mark" aria-hidden="true"></i>
+            </span>
+            Questions
+          </a>
+          <a href="#" class="sidebar-link sidebar-link-with-icon">
+            <span class="sidebar-icon">
+              <i class="bx bxs-calendar-check" aria-hidden="true"></i>
+            </span>
+            Quizzes
+          </a>
+        {% endwith %}
       </div>
     </div>
     <!-- Sidebar end -->
