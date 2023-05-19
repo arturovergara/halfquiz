@@ -1,13 +1,34 @@
 # Standard Libraries
+import random
 import uuid
 
 # Django Imports
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
 class GameManager(models.Manager):
     def create_random_game_by_topic(self, topic, number_of_questions):
-        pass
+        questions = Question.objects.filter(topic=topic)
+        questions_length = questions.count()
+
+        if number_of_questions > questions_length:
+            raise ValidationError(
+                "The number of questions desired for the game is greater than the number of questions for this topic"
+            )
+
+        random_numbers = random.sample(range(questions_length), number_of_questions)
+        random_questions = [
+            Answer(question=questions[idx], question_order=i)
+            for i, idx in enumerate(random_numbers, start=1)
+        ]
+
+        game = self.model.create(topic=topic)
+
+        for question in random_questions:
+            print(question.question.statement)
+
+        print("----------------------------")
 
 
 class Topic(models.Model):
@@ -71,6 +92,7 @@ class Game(models.Model):
     is_ready = models.BooleanField(default=False)
     current_question = models.ForeignKey(
         "Answer",
+        related_name="game_answers",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -97,6 +119,7 @@ class Game(models.Model):
 
 class Answer(models.Model):
     question_order = models.PositiveSmallIntegerField()
+    game = models.ForeignKey("Game", on_delete=models.CASCADE)
     question = models.ForeignKey("Question", on_delete=models.CASCADE)
     option = models.ForeignKey(
         "Option",

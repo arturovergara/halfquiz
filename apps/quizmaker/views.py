@@ -2,10 +2,16 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 
 from .forms import OptionFormSet, QuestionForm, TopicForm
-from .models import Question, Topic
+from .models import Game, Question, Topic
 
 
 class TopicListView(ListView):
@@ -106,3 +112,12 @@ class QuestionUpdateView(SuccessMessageMixin, UpdateView):
         formset.save()
 
         return response
+
+
+class TestView(TemplateView):
+    template_name = "quizmaker/test.html"
+
+    def get_context_data(self, **kwargs):
+        topic = Topic.objects.first()
+        Game.objects.create_random_game_by_topic(topic=topic, number_of_questions=2)
+        return super(TestView, self).get_context_data(**kwargs)

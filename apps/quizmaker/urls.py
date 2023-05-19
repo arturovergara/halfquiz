@@ -7,6 +7,7 @@ from .views import (
     QuestionDeleteView,
     QuestionListView,
     QuestionUpdateView,
+    TestView,
     TopicCreateView,
     TopicDeleteView,
     TopicListView,
@@ -29,6 +30,7 @@ urlpatterns = [
     ),
     path("questions/add/", QuestionCreateView.as_view(), name="question_create"),
     path("questions/", QuestionListView.as_view(), name="question_list"),
+    path("test/", TestView.as_view(), name="test_view"),
     path(
         "", RedirectView.as_view(url=reverse_lazy("quizmaker:topic_list")), name="home"
     ),
