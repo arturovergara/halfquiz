@@ -1,0 +1,12 @@
+[run]
+branch = True
+
+omit =
+   apps/*/apps.py
+   apps/*/migrations/*
+   apps/*/tests/*
+   conftest.py
+   manage.py
+
+[html]
+directory = htmlcov
