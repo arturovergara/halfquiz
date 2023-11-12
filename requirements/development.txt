@@ -1,5 +1,8 @@
 -r ./test.txt
 
-black>=22.10.0
-isort>=5.10.1
-pre-commit>=2.20.0
+black>=23.11.0
+ruff>=0.1.5
+isort>=5.12.0
+djlint>=1.34.0
+bandit>=1.7.5
+django-types>=0.19.1

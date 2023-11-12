@@ -1,0 +1,58 @@
+[tool.black]
+line-length = 90
+
+[tool.isort]
+line_length = 90
+extra_standard_library = "asgiref"
+known_first_party = "apps"
+known_django = "django"
+src_paths = "isort,test"
+use_parentheses = true
+multi_line_output = 3
+include_trailing_comma = true
+ensure_newline_before_comments = true
+sections = "FUTURE,STDLIB,DJANGO,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+import_heading_stdlib = "Standard Libraries"
+import_heading_firstparty = "Halfquiz Libraries"
+import_heading_thirdparty = "3rd Party Libraries"
+import_heading_django = "Django Imports"
+
+[tool.ruff]
+line-length = 90
+ignore = ["E501"]
+
+[tool.bandit]
+exclude_dirs = ["venv", "__pycache__"]
+
+[tool.bandit.assert_used]
+skips = ["**/test_*.py"]
+
+[tool.pytest.ini_options]
+addopts = "--ds=config.settings.test"
+python_files = "tests.py test_*.py *_tests.py"
+
+[tool.djlint]
+indent = 2
+blank_line_before_tag = "block"
+blank_line_after_tag = "endblock,extends,load"
+format_css = true
+format_js = true
+ignore = "H006"
+
+[tool.djlint.css]
+indent_size = 2
+
+[tool.djlint.js]
+indent_size = 2
+
+[tool.coverage.run]
+branch = true
+source = ["apps"]
+omit = [
+   "*/apps.py",
+   "*/migrations/*",
+   "*/tests/*",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
