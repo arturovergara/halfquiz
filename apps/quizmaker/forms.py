@@ -86,7 +86,6 @@ class InGameQuestionForm(forms.ModelForm):
 
     def save(self, commit=True):
         game_question = super(InGameQuestionForm, self).save(commit)
-        print("Se llamo a save()")
         game_question.game.answer_question()
 
         return game_question.game
