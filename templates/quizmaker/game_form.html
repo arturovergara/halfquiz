@@ -7,23 +7,23 @@
     <div class="row row-eq-spacing-lg">
       <div class="col">
         <div class="content">
-          <h1 class="content-title">Topics</h1>
+          <h1 class="content-title">Games</h1>
         </div>
         <div class="card">
-          <h2 class="card-title flex-grow-1">Topic Registration</h2>
+          <h2 class="card-title flex-grow-1">Create a New Game</h2>
           <form method="post">
             <div class="form-group">
-              <label for="{{ form.name.id_for_label }}" class="required">Name</label>
-              {% render_field form.name class+="form-control" %}
+              <label for="{{ form.topic.id_for_label }}" class="required">Topic</label>
+              {% render_field form.topic class+="form-control" %}
             </div>
             <div class="form-group">
-              <label for="{{ form.description.id_for_label }}" class="required">Description</label>
-              {% render_field form.description rows="4" class+="form-control" %}
+              <label for="{{ form.number_of_questions.id_for_label }}" class="required"># Questions</label>
+              {% render_field form.number_of_questions class+="form-control" %}
             </div>
             {# Include the hidden fields in the form #}
             {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
             {% csrf_token %}
-            <input class="btn btn-primary btn-block" type="submit" value="Submit Topic" />
+            <input class="btn btn-primary btn-block" type="submit" value="Create Game" />
           </form>
         </div>
       </div>

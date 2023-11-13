@@ -1,7 +1,7 @@
 # Django Imports
 from django.contrib import admin
 
-from .models import Game, Option, Question, Quiz, Topic
+from .models import Game, GameQuestion, Option, Question, Quiz, Topic
 
 
 class OptionInline(admin.TabularInline):
@@ -9,13 +9,18 @@ class OptionInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     inlines = (OptionInline,)
     list_display = ("statement", "topic")
 
 
-admin.site.register(Question, QuestionAdmin)
+@admin.register(Game)
+class GameAdmin(admin.ModelAdmin):
+    readonly_fields = ("uuid",)
+
+
 admin.site.register(Option)
 admin.site.register(Quiz)
 admin.site.register(Topic)
-admin.site.register(Game)
+admin.site.register(GameQuestion)

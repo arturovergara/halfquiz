@@ -1,13 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block layout %}
-  <!-- Page wrapper start -->
   <div id="page-wrapper"
        class="page-wrapper with-navbar with-sidebar with-navbar-fixed-bottom"
        data-sidebar-type="overlayed-sm-and-down">
-    <!-- Sticky alerts -->
     <div class="sticky-alerts"></div>
-    <!-- Navbar start -->
     <nav class="navbar">
       <div class="navbar-content">
         <button id="toggle-sidebar-btn"
@@ -19,40 +16,36 @@
       </div>
       <span class="navbar-brand ml-10 ml-sm-20">Halfquiz</span>
     </nav>
-    <!-- Navbar end -->
-    <!-- Sidebar overlay -->
     <div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
-    <!-- Sidebar start -->
     <div class="sidebar">
       <div class="sidebar-menu">
         {% with request.resolver_match.url_name as url_name %}
           <h5 class="sidebar-title">Dashboard</h5>
           <div class="sidebar-divider"></div>
           <a href="{% url 'quizmaker:topic_list' %}"
-             class="sidebar-link sidebar-link-with-icon {% if 'topic' in url_name %} active{% endif %}">
+             class="sidebar-link sidebar-link-with-icon {% if 'topic' in url_name %}active{% endif %}">
             <span class="sidebar-icon">
               <i class="bx bxs-category" aria-hidden="true"></i>
             </span>
             Topics
           </a>
           <a href="{% url 'quizmaker:question_list' %}"
-             class="sidebar-link sidebar-link-with-icon {% if 'question' in url_name %} active{% endif %}">
+             class="sidebar-link sidebar-link-with-icon {% if 'question' in url_name %}active{% endif %}">
             <span class="sidebar-icon">
               <i class="bx bx-question-mark" aria-hidden="true"></i>
             </span>
             Questions
           </a>
-          <a href="#" class="sidebar-link sidebar-link-with-icon">
+          <a href="{% url 'quizmaker:game_list' %}"
+             class="sidebar-link sidebar-link-with-icon {% if 'game' in url_name %}active{% endif %}">
             <span class="sidebar-icon">
               <i class="bx bxs-calendar-check" aria-hidden="true"></i>
             </span>
-            Quizzes
+            Games
           </a>
         {% endwith %}
       </div>
     </div>
-    <!-- Sidebar end -->
-    <!-- Content wrapper start -->
     <div class="content-wrapper">
       {% if messages %}
         {% include "partials/message_notification_toast.html" %}
@@ -60,13 +53,10 @@
 
       {% block content %}
       {% endblock content %}
+
     </div>
-    <!-- Content wrapper end -->
-    <!-- Navbar fixed bottom start -->
     <nav class="navbar navbar-fixed-bottom">
       <span class="navbar-text">© Copyright {% now "Y" %}</span>
     </nav>
-    <!-- Navbar fixed bottom end -->
   </div>
-  <!-- Page wrapper end -->
 {% endblock layout %}

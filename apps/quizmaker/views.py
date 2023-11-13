@@ -1,16 +1,24 @@
 # Django Imports
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
     DeleteView,
+    FormView,
     ListView,
     TemplateView,
     UpdateView,
 )
 
-from .forms import OptionFormSet, QuestionForm, TopicForm
+from .forms import (
+    GameCreateForm,
+    InGameQuestionForm,
+    OptionFormSet,
+    QuestionForm,
+    TopicForm,
+)
 from .models import Game, Question, Topic
 
 
@@ -93,9 +101,9 @@ class QuestionUpdateView(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context_data = super(QuestionUpdateView, self).get_context_data(**kwargs)
         context_data["option_formset"] = (
-            OptionFormSet(self.request.POST, instance=self.object)
+            OptionFormSet(self.request.POST, instance=self.get_object())
             if self.request.POST
-            else OptionFormSet(instance=self.object)
+            else OptionFormSet(instance=self.get_object())
         )
 
         return context_data
@@ -108,14 +116,81 @@ class QuestionUpdateView(SuccessMessageMixin, UpdateView):
             return super(QuestionUpdateView, self).form_invalid(form)
 
         response = super(QuestionUpdateView, self).form_valid(form)
-        formset.instance = self.object
+        formset.instance = self.get_object()
         formset.save()
 
         return response
 
 
+class GameListView(ListView):
+    model = Game
+    context_object_name = "games"
+
+
+class GameCreateView(FormView):
+    form_class = GameCreateForm
+    template_name = "quizmaker/game_form.html"
+    success_url = reverse_lazy("quizmaker:game_list")
+
+    def form_valid(self, form):
+        self.game = form.create_game()
+
+        return super(GameCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("quizmaker:game_play", args=(self.game.uuid,))
+
+
+class GameDeleteView(SuccessMessageMixin, DeleteView):
+    model = Game
+    success_url = reverse_lazy("quizmaker:game_list")
+    success_message = "Game was deleted successfully!"
+
+    def get(self, request, *args, **kwargs):
+        raise Http404("Only POST method available")
+
+
+class InGameFormView(SuccessMessageMixin, FormView):
+    form_class = InGameQuestionForm
+    template_name = "quizmaker/ingame_form.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.game = get_object_or_404(Game, uuid=kwargs["game_uuid"], is_ready=False)
+
+        return super(InGameFormView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(InGameFormView, self).get_form_kwargs()
+        kwargs.update({"instance": self.game.current_question})
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context_data = super(InGameFormView, self).get_context_data(**kwargs)
+        context_data["question_number"] = self.game.current_question.order
+        context_data["question_statement"] = self.game.current_question.question.statement
+
+        return context_data
+
+    def form_valid(self, form):
+        self.game = form.save()
+
+        return super(InGameFormView, self).form_valid(form)
+
+    def get_success_url(self):
+        if not self.game.is_ready:
+            return reverse_lazy("quizmaker:game_play", args=(self.game.uuid,))
+
+        return reverse_lazy("quizmaker:game_list")
+
+    def get_success_message(self, cleaned_data):
+        status = "Correct" if cleaned_data["answer"].is_right else "Incorrect"
+
+        return f"{status} Answer"
+
+
 class TestView(TemplateView):
-    template_name = "quizmaker/test.html"
+    template_name = "quizmaker/ingame_form.html"
 
     def get_context_data(self, **kwargs):
         topic = Topic.objects.first()

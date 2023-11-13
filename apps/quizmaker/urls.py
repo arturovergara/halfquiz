@@ -3,6 +3,10 @@ from django.urls import path, reverse_lazy
 from django.views.generic import RedirectView
 
 from .views import (
+    GameCreateView,
+    GameDeleteView,
+    GameListView,
+    InGameFormView,
     QuestionCreateView,
     QuestionDeleteView,
     QuestionListView,
@@ -30,8 +34,10 @@ urlpatterns = [
     ),
     path("questions/add/", QuestionCreateView.as_view(), name="question_create"),
     path("questions/", QuestionListView.as_view(), name="question_list"),
+    path("games/<int:pk>/delete/", GameDeleteView.as_view(), name="game_delete"),
+    path("games/<uuid:game_uuid>/play/", InGameFormView.as_view(), name="game_play"),
+    path("games/add/", GameCreateView.as_view(), name="game_create"),
+    path("games/", GameListView.as_view(), name="game_list"),
     path("test/", TestView.as_view(), name="test_view"),
-    path(
-        "", RedirectView.as_view(url=reverse_lazy("quizmaker:topic_list")), name="home"
-    ),
+    path("", RedirectView.as_view(url=reverse_lazy("quizmaker:topic_list")), name="home"),
 ]

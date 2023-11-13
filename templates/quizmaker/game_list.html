@@ -1,0 +1,101 @@
+{% extends "quizmaker/base.html" %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row row-eq-spacing-lg">
+      <div class="col">
+        <div class="content">
+          <h1 class="content-title">Games</h1>
+        </div>
+        <div class="card">
+          <div class="d-flex">
+            <h2 class="card-title flex-grow-1">Game Results List</h2>
+            <a href="{% url 'quizmaker:game_create' %}"
+               class="btn btn-success text-white">New Game</a>
+          </div>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for game in games %}
+                <tr>
+                  <th>{{ forloop.counter }}</th>
+                  <td>Test</td>
+                  <td>{{ game.is_ready }}</td>
+                  <td class="text-right">
+                    <button type="submit"
+                            class="btn btn-secondary"
+                            onclick="retryGame({{ game.id }})">
+                      <i class="bx bx-repost"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            onclick="deleteGame({{ game.id }})">
+                      <i class="bx bxs-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="delete-game-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <h5 class="modal-title">Delete Game</h5>
+        <p>Are you sure you want to delete this game?</p>
+        <div class="d-flex justify-content-end mt-20">
+          <button class="btn mr-10" onclick="halfmoon.toggleModal('delete-game-modal')">Cancel</button>
+          <form id="delete-game-form" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="retry-game-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <h5 class="modal-title">Retry Game</h5>
+        <p>Are you sure you want to play this game again?</p>
+        <div class="d-flex justify-content-end mt-20">
+          <button class="btn mr-10" onclick="halfmoon.toggleModal('retry-game-modal')">Cancel</button>
+          <form id="retry-game-form" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Play Game</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block morescripts %}
+  <script>
+    function retryGame(gameId) {
+      const retryGameForm = document.getElementById("retry-game-form");
+      const action = "{% url 'quizmaker:topic_delete' 12345 %}"
+
+      retryGameForm.action = action.replace(/12345/, gameId);
+      halfmoon.toggleModal("retry-game-modal");
+    }
+
+    function deleteGame(gameId) {
+      const deleteGameForm = document.getElementById("delete-game-form");
+      const action = "{% url 'quizmaker:game_delete' 12345 %}"
+
+      deleteGameForm.action = action.replace(/12345/, gameId);
+      halfmoon.toggleModal("delete-game-modal");
+    }
+  </script>
+{% endblock morescripts %}

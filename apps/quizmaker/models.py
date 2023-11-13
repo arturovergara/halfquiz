@@ -3,7 +3,6 @@ import random
 import uuid
 
 # Django Imports
-from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -13,22 +12,20 @@ class GameManager(models.Manager):
         questions_length = questions.count()
 
         if number_of_questions > questions_length:
-            raise ValidationError(
-                "The number of questions desired for the game is greater than the number of questions for this topic"
-            )
+            number_of_questions = questions_length
 
+        game = self.create()
         random_numbers = random.sample(range(questions_length), number_of_questions)
         random_questions = [
-            Answer(question=questions[idx], question_order=i)
+            GameQuestion(question=questions[idx], order=i, game=game)
             for i, idx in enumerate(random_numbers, start=1)
         ]
 
-        game = self.model.create(topic=topic)
+        GameQuestion.objects.bulk_create(random_questions)
+        game.current_question = GameQuestion.objects.get(order=1, game=game)
+        game.save()
 
-        for question in random_questions:
-            print(question.question.statement)
-
-        print("----------------------------")
+        return game
 
 
 class Topic(models.Model):
@@ -91,20 +88,8 @@ class Game(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     is_ready = models.BooleanField(default=False)
     current_question = models.ForeignKey(
-        "Answer",
+        "GameQuestion",
         related_name="game_answers",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    quiz = models.ForeignKey(
-        "Quiz",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    topic = models.ForeignKey(
-        "Topic",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -112,16 +97,24 @@ class Game(models.Model):
 
     objects = GameManager()
 
-    @property
-    def is_quiz(self):
-        return self.quiz is not None
+    def answer_question(self) -> None:
+        try:
+            next_question = GameQuestion.objects.get(
+                game=self, order=self.current_question.order + 1
+            )
+            self.current_question = next_question
+        except Exception:
+            self.current_question = None
+            self.is_ready = True
+
+        self.save()
 
 
-class Answer(models.Model):
-    question_order = models.PositiveSmallIntegerField()
+class GameQuestion(models.Model):
+    order = models.PositiveSmallIntegerField()
     game = models.ForeignKey("Game", on_delete=models.CASCADE)
     question = models.ForeignKey("Question", on_delete=models.CASCADE)
-    option = models.ForeignKey(
+    answer = models.ForeignKey(
         "Option",
         on_delete=models.SET_NULL,
         null=True,
