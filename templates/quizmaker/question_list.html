@@ -10,8 +10,24 @@
         <div class="card">
           <div class="d-flex">
             <h2 class="card-title flex-grow-1">Question List</h2>
-            <a href="{% url 'quizmaker:question_create' %}"
-               class="btn btn-success text-white">New Question</a>
+            <div class="btn-group" role="group">
+              <a href="{% url 'quizmaker:question_create' %}"
+                 class="btn btn-success text-white">New Question</a>
+              <div class="btn-group dropdown with-arrow" role="group">
+                <button class="btn btn-success btn-square"
+                        data-toggle="dropdown"
+                        type="button"
+                        id="dropdown-toggle-btn"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                  <i class="bx bx-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-center"
+                     aria-labelledby="dropdown-toggle-btn">
+                  <a href="{% url 'quizmaker:question_import' %}" class="dropdown-item">Import from file</a>
+                </div>
+              </div>
+            </div>
           </div>
           <table class="table table-bordered table-striped">
             <thead>

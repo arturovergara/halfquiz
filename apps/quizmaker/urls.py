@@ -7,6 +7,7 @@ from .views import (
     GameDeleteView,
     GameListView,
     InGameFormView,
+    QuestionBulkCreateView,
     QuestionCreateView,
     QuestionDeleteView,
     QuestionListView,
@@ -33,6 +34,7 @@ urlpatterns = [
         "questions/<int:pk>/edit/", QuestionUpdateView.as_view(), name="question_update"
     ),
     path("questions/add/", QuestionCreateView.as_view(), name="question_create"),
+    path("questions/import/", QuestionBulkCreateView.as_view(), name="question_import"),
     path("questions/", QuestionListView.as_view(), name="question_list"),
     path("games/<int:pk>/delete/", GameDeleteView.as_view(), name="game_delete"),
     path("games/<uuid:game_uuid>/play/", InGameFormView.as_view(), name="game_play"),

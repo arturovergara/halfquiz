@@ -3,6 +3,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory
 
+# 3rd Party Libraries
+from openpyxl import load_workbook
+
+from .fields import ExcelField
 from .models import Game, GameQuestion, Option, Question, Topic
 
 
@@ -10,6 +14,61 @@ class TopicForm(forms.ModelForm):
     class Meta:
         model = Topic
         fields = ("name", "description")
+
+
+class QuestionBulkCreateForm(forms.Form):
+    topic = forms.ModelChoiceField(queryset=Topic.objects.all())
+    questions_file = ExcelField()
+
+    def clean(self):
+        cleaned_data = super(QuestionBulkCreateForm, self).clean()
+        wb = load_workbook(cleaned_data["questions_file"])
+        sheet = wb.worksheets[0]
+        questions = []
+
+        for row in sheet.iter_rows(min_row=2, max_col=7, values_only=True):
+            if (row[0] is None) and (row[1] is None):
+                continue
+
+            question_statement = str(row[0])
+            question_time = str(row[1])
+            correct_option = int(str(row[6]))
+            options = [
+                {"text": str(option), "is_right": i == correct_option}
+                for i, option in enumerate(row[2:6], start=1)
+            ]
+
+            questions.append(
+                {
+                    "statement": question_statement,
+                    "time": int(question_time),
+                    "options": options,
+                }
+            )
+
+        cleaned_data["questions"] = questions
+
+        return cleaned_data
+
+    def save(self):
+        topic = self.cleaned_data["topic"]
+
+        for question_data in self.cleaned_data["questions"]:
+            question = Question.objects.create(
+                statement=question_data["statement"],
+                time=question_data["time"],
+                topic=topic,
+            )
+            options = [
+                Option(
+                    text=option["text"],
+                    is_right=option["is_right"],
+                    question=question,
+                )
+                for option in question_data["options"]
+            ]
+
+            Option.objects.bulk_create(options)
 
 
 class QuestionForm(forms.ModelForm):

@@ -16,6 +16,7 @@ from .forms import (
     GameCreateForm,
     InGameQuestionForm,
     OptionFormSet,
+    QuestionBulkCreateForm,
     QuestionForm,
     TopicForm,
 )
@@ -81,6 +82,18 @@ class QuestionCreateView(SuccessMessageMixin, CreateView):
         formset.save()
 
         return response
+
+
+class QuestionBulkCreateView(SuccessMessageMixin, FormView):
+    form_class = QuestionBulkCreateForm
+    template_name = "quizmaker/question_bulk_form.html"
+    success_url = reverse_lazy("quizmaker:question_list")
+    success_message = "Question have been added successfully!"
+
+    def form_valid(self, form):
+        form.save()
+
+        return super(QuestionBulkCreateView, self).form_valid(form)
 
 
 class QuestionDeleteView(SuccessMessageMixin, DeleteView):
