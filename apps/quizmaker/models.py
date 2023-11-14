@@ -37,7 +37,7 @@ class Topic(models.Model):
 
 
 class Question(models.Model):
-    statement = models.CharField(max_length=200)
+    statement = models.CharField(max_length=400)
     time = models.PositiveBigIntegerField(default=45000)
     explaination = models.TextField(null=True, blank=True)
     topic = models.ForeignKey(
@@ -58,7 +58,7 @@ class Question(models.Model):
 
 
 class Option(models.Model):
-    text = models.CharField(max_length=100)
+    text = models.CharField(max_length=250)
     is_right = models.BooleanField(default=False)
     question = models.ForeignKey(
         "Question",
