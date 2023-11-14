@@ -98,42 +98,58 @@
   </style>
 {% endblock morelinks %}
 
-{% block content %}
-  <div class="container-fluid">
-    <div class="row row-eq-spacing-lg">
-      <div class="col-lg-12">
-        <div class="content">
-          <h1 class="content-title">Training Quiz</h1>
-        </div>
-        <div class="card">
-          <h2 class="card-title">{{ question_number }}. {{ question_statement }}</h2>
-          <form method="post">
-            <div class="container-fluid">
-              {% for option_field in form.answer %}
-                {% if not forloop.counter|divisibleby:2 %}<div class="row row-eq-spacing-md">{% endif %}
-                  <div class="col-md-6">
-                    <div class="content">
-                      <div class="option option-{{ forloop.counter|to_color }}">
-                        {% render_field option_field.tag %}
-                        <label for="{{ option_field.id_for_label }}" class="form-check-label">
-                          <p class="option-heading">Option {{ forloop.counter|to_letter }}</p>
-                          {{ option_field.choice_label }}
-                        </label>
+{% block layout %}
+  <div id="page-wrapper"
+       class="page-wrapper with-navbar with-navbar-fixed-bottom"
+       data-sidebar-type="overlayed-sm-and-down">
+    <div class="sticky-alerts"></div>
+    <nav class="navbar">
+      <span class="navbar-brand ml-10 ml-sm-20">Halfquiz</span>
+    </nav>
+    <div class="content-wrapper">
+      {% if messages %}
+        {% include "partials/question_result_notification_toast.html" %}
+      {% endif %}
+      <div class="container-fluid">
+        <div class="row row-eq-spacing-lg">
+          <div class="col-lg-12">
+            <div class="content">
+              <h1 class="content-title">Training Quiz</h1>
+            </div>
+            <div class="card">
+              <h2 class="card-title">{{ question_number }}. {{ question_statement }}</h2>
+              <form method="post">
+                <div class="container-fluid">
+                  {% for option_field in form.answer %}
+                    {% if not forloop.counter|divisibleby:2 %}<div class="row row-eq-spacing-md">{% endif %}
+                      <div class="col-md-6">
+                        <div class="content">
+                          <div class="option option-{{ forloop.counter|to_color }}">
+                            {% render_field option_field.tag %}
+                            <label for="{{ option_field.id_for_label }}" class="form-check-label">
+                              <p class="option-heading">Option {{ forloop.counter|to_letter }}</p>
+                              {{ option_field.choice_label }}
+                            </label>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  {% if forloop.counter|divisibleby:2 %}</div>{% endif %}
-              {% endfor %}
+                      {% if forloop.counter|divisibleby:2 %}</div>{% endif %}
+                  {% endfor %}
+                </div>
+                {% csrf_token %}
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-secondary btn-lg">
+                    <i class="bx bxs-right-arrow"></i>
+                  </button>
+                </div>
+              </form>
             </div>
-            {% csrf_token %}
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-secondary btn-lg">
-                <i class="bx bxs-right-arrow"></i>
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
+    <nav class="navbar navbar-fixed-bottom">
+      <span class="navbar-text">© Copyright {% now "Y" %}</span>
+    </nav>
   </div>
-{% endblock content %}
+{% endblock layout %}

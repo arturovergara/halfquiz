@@ -1,0 +1,11 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+      halfmoon.initStickyAlert({
+        content: '{% if message.extra_tags != "correct" %}{{ message }}{% endif %}',
+        title: '{{ message.extra_tags|capfirst }} Answer',
+        alertType: 'alert-{% if message.extra_tags == "correct" %}success{% else %}secondary{% endif %}',
+      });
+    {% endfor %}
+  });
+</script>

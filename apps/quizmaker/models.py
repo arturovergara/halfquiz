@@ -56,6 +56,15 @@ class Question(models.Model):
 
         return int(seconds)
 
+    @property
+    def correct_option(self):
+        try:
+            correct_option = Option.objects.get(question=self, is_right=True)
+        except Option.DoesNotExist:
+            return None
+
+        return correct_option
+
 
 class Option(models.Model):
     text = models.CharField(max_length=250)
@@ -97,13 +106,27 @@ class Game(models.Model):
 
     objects = GameManager()
 
+    @property
+    def previous_question(self):
+        order = (
+            self.current_question.order
+            if self.current_question is not None
+            else GameQuestion.objects.filter(game=self).count()
+        )
+        try:
+            question = GameQuestion.objects.get(game=self, order=order - 1)
+        except GameQuestion.DoesNotExist:
+            return None
+
+        return question
+
     def answer_question(self) -> None:
         try:
             next_question = GameQuestion.objects.get(
                 game=self, order=self.current_question.order + 1
             )
             self.current_question = next_question
-        except Exception:
+        except GameQuestion.DoesNotExist:
             self.current_question = None
             self.is_ready = True
 

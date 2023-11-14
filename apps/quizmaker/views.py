@@ -1,4 +1,5 @@
 # Django Imports
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -197,9 +198,11 @@ class InGameFormView(SuccessMessageMixin, FormView):
         return reverse_lazy("quizmaker:game_list")
 
     def get_success_message(self, cleaned_data):
-        status = "Correct" if cleaned_data["answer"].is_right else "Incorrect"
+        is_right = cleaned_data["answer"].is_right
+        extra_tags = "correct" if is_right else "incorrect"
+        message = f"Answer: {self.game.previous_question.question.correct_option.text}"
 
-        return f"{status} Answer"
+        return messages.success(self.request, message, extra_tags=extra_tags)
 
 
 class TestView(TemplateView):
