@@ -117,8 +117,15 @@ class Game(models.Model):
         null=True,
         blank=True,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = GameManager()
+
+    @property
+    def name(self) -> str:
+        timestamp = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+        return f"Test {timestamp}"
 
     @property
     def previous_question(self):

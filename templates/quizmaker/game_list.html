@@ -26,13 +26,18 @@
               {% for game in games %}
                 <tr>
                   <th>{{ forloop.counter }}</th>
-                  <td>Test</td>
+                  <td>{{ game.name }}</td>
                   <td>{{ game.is_ready|yesno:"Done,In Progress" }}</td>
                   <td class="text-right">
                     {% if game.is_ready %}
                     <a href="{% url 'quizmaker:game_review' game.uuid %}"
-                       class="btn btn-secondary">
-                      <i class="bx bx-search-alt-2"></i>
+                       class="btn btn-success">
+                      <i class="bx bxs-file-find"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'quizmaker:game_play' game.uuid %}"
+                       class="btn btn-primary">
+                      <i class="bx bxs-right-arrow"></i>
                     </a>
                     {% endif %}
                     <button type="button"
