@@ -1,0 +1,38 @@
+services:
+  nginx:
+    image: nginx:1.29-alpine
+    labels:
+      name: halfquiz_nginx
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    volumes:
+      - halfquiz_staticfiles:/app/staticfiles
+      - halfquiz_media:/app/media
+      - ./compose/production/nginx/halfquiz.conf:/etc/nginx/nginx.conf:ro
+      - ./compose/production/nginx/ssl.conf:/etc/nginx/vhost.ssl.conf:ro
+    depends_on:
+      - app
+  app:
+    build:
+      context: .
+      dockerfile: ./compose/production/app/Dockerfile
+    image: halfquiz-production-app
+    labels:
+      name: halfquiz_app
+    command: /app/start.sh
+    restart: unless-stopped
+    environment:
+      - DJANGO_ADMIN_URL=${DJANGO_ADMIN_URL}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - MINIMUM_PASSING_PERCENTAGE=${MINIMUM_PASSING_PERCENTAGE}
+    volumes:
+      - halfquiz_staticfiles:/app/halfquiz/staticfiles
+      - halfquiz_media:/app/halfquiz/media
+      - "./service-data/sqlite-data/:/app/sqlite-data"
+volumes:
+  halfquiz_staticfiles:
+  halfquiz_media:
