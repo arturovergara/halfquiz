@@ -5,40 +5,44 @@
     <div class="row row-eq-spacing-lg">
       <div class="col">
         <div class="content">
-          <h1 class="content-title">Games</h1>
+          <h1 class="content-title">Game Results</h1>
+        </div>
+        <div class="card">
+          <h4>
+            Your score: <strong class="text-primary">{{ score }}</strong>/{{ game.gamequestion_set.count }}
+          </h4>
+          {% if is_approved %}
+          <div class="alert alert-success mt-15" role="alert">
+            <h4 class="alert-heading">Congratulations!</h4>
+            You've passed this quiz exam.
+          </div>
+          {% else %}
+          <div class="alert alert-danger mt-15" role="alert">
+            <h4 class="alert-heading">We're sorry...</h4>
+            You did not pass this quiz exam. Keep trying!
+          </div>
+          {% endif %}
         </div>
         <div class="card">
           <div class="d-flex">
-            <h2 class="card-title flex-grow-1">Game Results List</h2>
-            <a href="{% url 'quizmaker:game_create' %}"
-               class="btn btn-success text-white">New Game</a>
+            <h2 class="card-title flex-grow-1">Questions Review</h2>
           </div>
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>#</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th class="text-right">Actions</th>
+                <th>Question Statement</th>
+                <th>Correct Answer</th>
+                <th>Your Answer</th>
               </tr>
             </thead>
             <tbody>
-              {% for game in games %}
-                <tr>
+              {% for game_question in game.gamequestion_set.all %}
+                <tr class="table-{% if game_question.answer.is_right %}success{% else %}danger{% endif %}">
                   <th>{{ forloop.counter }}</th>
-                  <td>Test</td>
-                  <td>{{ game.is_ready }}</td>
-                  <td class="text-right">
-                    <a href="{% url 'quizmaker:game_review' game.uuid %}"
-                       class="btn btn-secondary">
-                      <i class="bx bx-repost"></i>
-                    </a>
-                    <button type="button"
-                            class="btn btn-danger"
-                            onclick="deleteGame({{ game.id }})">
-                      <i class="bx bxs-trash-alt"></i>
-                    </button>
-                  </td>
+                  <td>{{ game_question.question.statement }}</td>
+                  <td>{{ game_question.question.correct_option.text }}</td>
+                  <td>{{ game_question.answer.text }}</td>
                 </tr>
               {% endfor %}
             </tbody>

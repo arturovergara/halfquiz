@@ -19,6 +19,7 @@
                 <th>#</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th># Questions</th>
                 <th class="text-right">Actions</th>
               </tr>
             </thead>
@@ -28,6 +29,7 @@
                   <th>{{ forloop.counter }}</th>
                   <td>{{ topic.name }}</td>
                   <td>{{ topic.description }}</td>
+                  <td>{{ topic.questions_number }}</td>
                   <td class="text-right">
                     <a href="{% url 'quizmaker:topic_update' topic.id %}"
                        class="btn btn-secondary">

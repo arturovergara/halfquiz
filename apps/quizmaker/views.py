@@ -1,15 +1,17 @@
 # Django Imports
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Count
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
     DeleteView,
+    DetailView,
     FormView,
     ListView,
-    TemplateView,
     UpdateView,
 )
 
@@ -27,6 +29,9 @@ from .models import Game, Question, Topic
 class TopicListView(ListView):
     model = Topic
     context_object_name = "topics"
+
+    def get_queryset(self):
+        return Topic.objects.annotate(questions_number=Count("questions")).order_by("id")
 
 
 class TopicCreateView(SuccessMessageMixin, CreateView):
@@ -164,6 +169,31 @@ class GameDeleteView(SuccessMessageMixin, DeleteView):
         raise Http404("Only POST method available")
 
 
+class GameDetailView(DetailView):
+    model = Game
+    context_object_name = "game"
+
+    def get_object(self):
+        return Game.objects.prefetch_related("gamequestion_set").get(
+            uuid=self.kwargs["game_uuid"], is_ready=True
+        )
+
+    def get_context_data(self, **kwargs):
+        context_data = super(GameDetailView, self).get_context_data(**kwargs)
+        correct_answers = self.object.gamequestion_set.filter(
+            answer__is_right=True
+        ).count()
+        total_questions = self.object.gamequestion_set.count()
+        correct_percentage = (correct_answers / total_questions) * 100
+
+        context_data["score"] = correct_answers
+        context_data["is_approved"] = (
+            correct_percentage >= settings.MINIMUM_PASSING_PERCENTAGE
+        )
+
+        return context_data
+
+
 class InGameFormView(SuccessMessageMixin, FormView):
     form_class = InGameQuestionForm
     template_name = "quizmaker/ingame_form.html"
@@ -183,6 +213,7 @@ class InGameFormView(SuccessMessageMixin, FormView):
         context_data = super(InGameFormView, self).get_context_data(**kwargs)
         context_data["question_number"] = self.game.current_question.order
         context_data["question_statement"] = self.game.current_question.question.statement
+        context_data["question_image"] = self.game.current_question.question.image
 
         return context_data
 
@@ -195,20 +226,14 @@ class InGameFormView(SuccessMessageMixin, FormView):
         if not self.game.is_ready:
             return reverse_lazy("quizmaker:game_play", args=(self.game.uuid,))
 
-        return reverse_lazy("quizmaker:game_list")
+        return reverse_lazy("quizmaker:game_review", args=(self.game.uuid,))
 
     def get_success_message(self, cleaned_data):
+        if not self.game.show_answer:
+            return None
+
         is_right = cleaned_data["answer"].is_right
         extra_tags = "correct" if is_right else "incorrect"
         message = f"Answer: {self.game.previous_question.question.correct_option.text}"
 
         return messages.success(self.request, message, extra_tags=extra_tags)
-
-
-class TestView(TemplateView):
-    template_name = "quizmaker/ingame_form.html"
-
-    def get_context_data(self, **kwargs):
-        topic = Topic.objects.first()
-        Game.objects.create_random_game_by_topic(topic=topic, number_of_questions=2)
-        return super(TestView, self).get_context_data(**kwargs)

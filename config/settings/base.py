@@ -146,3 +146,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+
+MINIMUM_PASSING_PERCENTAGE = env.int("MINIMUM_PASSING_PERCENTAGE", 60)

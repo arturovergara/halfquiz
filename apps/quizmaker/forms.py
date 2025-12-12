@@ -26,22 +26,22 @@ class QuestionBulkCreateForm(forms.Form):
         sheet = wb.worksheets[0]
         questions = []
 
-        for row in sheet.iter_rows(min_row=2, max_col=7, values_only=True):
+        for row in sheet.iter_rows(min_row=2, max_col=6, values_only=True):
             if (row[0] is None) and (row[1] is None):
                 continue
 
             question_statement = str(row[0])
-            question_time = str(row[1])
-            correct_option = int(str(row[6]))
+            question_time = int(row[1])
+            correct_option = int(row[5])
             options = [
                 {"text": str(option), "is_right": i == correct_option}
-                for i, option in enumerate(row[2:6], start=1)
+                for i, option in enumerate(row[2:5], start=1)
             ]
 
             questions.append(
                 {
                     "statement": question_statement,
-                    "time": int(question_time),
+                    "time": question_time,
                     "options": options,
                 }
             )
@@ -74,7 +74,8 @@ class QuestionBulkCreateForm(forms.Form):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ("statement", "topic", "time")
+        fields = ("statement", "topic", "time", "image")
+        widgets = {"statement": forms.Textarea()}
 
 
 class OptionForm(forms.ModelForm):
@@ -116,12 +117,14 @@ OptionFormSet = inlineformset_factory(
 class GameCreateForm(forms.Form):
     topic = forms.ModelChoiceField(queryset=Topic.objects.all())
     number_of_questions = forms.IntegerField(min_value=1)
+    # show_answer = forms.BooleanField()
 
     def create_game(self):
         topic = self.cleaned_data["topic"]
         number_of_questions = self.cleaned_data["number_of_questions"]
+        show_answer = False
         game = Game.objects.create_random_game_by_topic(
-            topic=topic, number_of_questions=number_of_questions
+            topic=topic, number_of_questions=number_of_questions, show_answer=show_answer
         )
 
         return game

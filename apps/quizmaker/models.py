@@ -1,13 +1,24 @@
 # Standard Libraries
 import random
 import uuid
+from datetime import datetime
+from pathlib import Path
 
 # Django Imports
 from django.db import models
+from django.utils import timezone
+
+
+def generate_image_path(instance, filename) -> str:
+    upload_to = "images"
+    now = timezone.now()
+    new_filename = f"image_{datetime.timestamp(now)}.jpg"
+
+    return Path(upload_to, new_filename).as_posix()
 
 
 class GameManager(models.Manager):
-    def create_random_game_by_topic(self, topic, number_of_questions):
+    def create_random_game_by_topic(self, topic, number_of_questions, show_answer):
         questions = Question.objects.filter(topic=topic)
         questions_length = questions.count()
 
@@ -23,6 +34,7 @@ class GameManager(models.Manager):
 
         GameQuestion.objects.bulk_create(random_questions)
         game.current_question = GameQuestion.objects.get(order=1, game=game)
+        game.show_answer = show_answer
         game.save()
 
         return game
@@ -37,9 +49,10 @@ class Topic(models.Model):
 
 
 class Question(models.Model):
-    statement = models.CharField(max_length=400)
+    statement = models.CharField(max_length=1250)
     time = models.PositiveBigIntegerField(default=45000)
     explaination = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to=generate_image_path, null=True, blank=True)
     topic = models.ForeignKey(
         "Topic",
         on_delete=models.PROTECT,
@@ -96,6 +109,7 @@ class Quiz(models.Model):
 class Game(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     is_ready = models.BooleanField(default=False)
+    show_answer = models.BooleanField(default=False)
     current_question = models.ForeignKey(
         "GameQuestion",
         related_name="game_answers",

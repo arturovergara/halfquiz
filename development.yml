@@ -14,9 +14,6 @@ services:
     environment:
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - DJANGO_SETTINGS_MODULE=config.settings.development
-      - POSTGRES_DB=db_halfquiz
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=database
+      - MINIMUM_PASSING_PERCENTAGE=${MINIMUM_PASSING_PERCENTAGE}
     volumes:
       - ./:/app

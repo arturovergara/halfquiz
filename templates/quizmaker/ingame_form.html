@@ -95,6 +95,10 @@
       background-color: #ff4d4f;
       border-color: #ff4d4f;
     }
+
+    .content-wrapper {
+      min-height: 500px;
+    }
   </style>
 {% endblock morelinks %}
 
@@ -117,7 +121,14 @@
               <h1 class="content-title">Training Quiz</h1>
             </div>
             <div class="card">
-              <h2 class="card-title">{{ question_number }}. {{ question_statement }}</h2>
+              <h2 class="card-title">
+                <span>{{ question_number }}.</span> {{ question_statement|linebreaks }}
+              </h2>
+              {% if question_image %}
+              <div class="d-flex justify-content-center">
+                <img src="{{ question_image.url }}" />
+              </div>
+              {% endif %}
               <form method="post">
                 <div class="container-fluid">
                   {% for option_field in form.answer %}
@@ -148,8 +159,5 @@
         </div>
       </div>
     </div>
-    <nav class="navbar navbar-fixed-bottom">
-      <span class="navbar-text">© Copyright {% now "Y" %}</span>
-    </nav>
   </div>
 {% endblock layout %}

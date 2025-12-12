@@ -5,6 +5,7 @@ from django.views.generic import RedirectView
 from .views import (
     GameCreateView,
     GameDeleteView,
+    GameDetailView,
     GameListView,
     InGameFormView,
     QuestionBulkCreateView,
@@ -12,7 +13,6 @@ from .views import (
     QuestionDeleteView,
     QuestionListView,
     QuestionUpdateView,
-    TestView,
     TopicCreateView,
     TopicDeleteView,
     TopicListView,
@@ -38,8 +38,8 @@ urlpatterns = [
     path("questions/", QuestionListView.as_view(), name="question_list"),
     path("games/<int:pk>/delete/", GameDeleteView.as_view(), name="game_delete"),
     path("games/<uuid:game_uuid>/play/", InGameFormView.as_view(), name="game_play"),
+    path("games/<uuid:game_uuid>/review/", GameDetailView.as_view(), name="game_review"),
     path("games/add/", GameCreateView.as_view(), name="game_create"),
     path("games/", GameListView.as_view(), name="game_list"),
-    path("test/", TestView.as_view(), name="test_view"),
     path("", RedirectView.as_view(url=reverse_lazy("quizmaker:topic_list")), name="home"),
 ]
