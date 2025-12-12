@@ -18,7 +18,7 @@ class ExcelField(FileField):
         """
         Check that the file-upload field data contains a valid excel file
         """
-        f = super(ExcelField, self).to_python(data)
+        f = super().to_python(data)
 
         if f is None:
             return None
@@ -47,7 +47,7 @@ class ExcelField(FileField):
         return f
 
     def widget_attrs(self, widget):
-        attrs = super(ExcelField, self).widget_attrs(widget)
+        attrs = super().widget_attrs(widget)
 
         if isinstance(widget, FileInput) and "accept" not in widget.attrs:
             attrs.setdefault("accept", ".xls,.xlsx")

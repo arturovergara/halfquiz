@@ -1,5 +1,6 @@
 # Django Imports
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory
 
@@ -21,7 +22,7 @@ class QuestionBulkCreateForm(forms.Form):
     questions_file = ExcelField()
 
     def clean(self):
-        cleaned_data = super(QuestionBulkCreateForm, self).clean()
+        cleaned_data = super().clean()
         wb = load_workbook(cleaned_data["questions_file"])
         sheet = wb.worksheets[0]
         questions = []
@@ -117,7 +118,11 @@ OptionFormSet = inlineformset_factory(
 class GameCreateForm(forms.Form):
     topic = forms.ModelChoiceField(queryset=Topic.objects.all())
     number_of_questions = forms.IntegerField(min_value=1)
-    # show_answer = forms.BooleanField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["number_of_questions"].initial = settings.DEFAULT_NUMBER_OF_QUESTIONS
 
     def create_game(self):
         topic = self.cleaned_data["topic"]
@@ -139,7 +144,7 @@ class InGameQuestionForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(InGameQuestionForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.fields["answer"].empty_label = None
         self.fields["answer"].queryset = Option.objects.filter(
@@ -147,7 +152,7 @@ class InGameQuestionForm(forms.ModelForm):
         )
 
     def save(self, commit=True):
-        game_question = super(InGameQuestionForm, self).save(commit)
+        game_question = super().save(commit)
         game_question.game.answer_question()
 
         return game_question.game

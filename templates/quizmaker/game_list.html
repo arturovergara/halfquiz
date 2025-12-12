@@ -27,12 +27,14 @@
                 <tr>
                   <th>{{ forloop.counter }}</th>
                   <td>Test</td>
-                  <td>{{ game.is_ready }}</td>
+                  <td>{{ game.is_ready|yesno:"Done,In Progress" }}</td>
                   <td class="text-right">
+                    {% if game.is_ready %}
                     <a href="{% url 'quizmaker:game_review' game.uuid %}"
                        class="btn btn-secondary">
-                      <i class="bx bx-repost"></i>
+                      <i class="bx bx-search-alt-2"></i>
                     </a>
+                    {% endif %}
                     <button type="button"
                             class="btn btn-danger"
                             onclick="deleteGame({{ game.id }})">
@@ -62,33 +64,10 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="retry-game-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <h5 class="modal-title">Retry Game</h5>
-        <p>Are you sure you want to play this game again?</p>
-        <div class="d-flex justify-content-end mt-20">
-          <button class="btn mr-10" onclick="halfmoon.toggleModal('retry-game-modal')">Cancel</button>
-          <form id="retry-game-form" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-secondary">Play Game</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
 {% endblock content %}
 
 {% block morescripts %}
   <script>
-    function retryGame(gameId) {
-      const retryGameForm = document.getElementById("retry-game-form");
-      const action = "{% url 'quizmaker:topic_delete' 12345 %}"
-
-      retryGameForm.action = action.replace(/12345/, gameId);
-      halfmoon.toggleModal("retry-game-modal");
-    }
-
     function deleteGame(gameId) {
       const deleteGameForm = document.getElementById("delete-game-form");
       const action = "{% url 'quizmaker:game_delete' 12345 %}"

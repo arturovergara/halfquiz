@@ -70,7 +70,7 @@ class QuestionCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     success_message = "Question was created successfully!"
 
     def get_context_data(self, **kwargs):
-        context_data = super(QuestionCreateView, self).get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
         context_data["option_formset"] = (
             OptionFormSet(self.request.POST) if self.request.POST else OptionFormSet()
         )
@@ -82,9 +82,9 @@ class QuestionCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         formset = context_data["option_formset"]
 
         if not formset.is_valid():
-            return super(QuestionCreateView, self).form_invalid(form)
+            return super().form_invalid(form)
 
-        response = super(QuestionCreateView, self).form_valid(form)
+        response = super().form_valid(form)
         formset.instance = self.object
         formset.save()
 
@@ -100,7 +100,7 @@ class QuestionBulkCreateView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     def form_valid(self, form):
         form.save()
 
-        return super(QuestionBulkCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class QuestionDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -119,7 +119,7 @@ class QuestionUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     success_message = "Question was updated successfully!"
 
     def get_context_data(self, **kwargs):
-        context_data = super(QuestionUpdateView, self).get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
         context_data["option_formset"] = (
             OptionFormSet(self.request.POST, instance=self.get_object())
             if self.request.POST
@@ -133,9 +133,9 @@ class QuestionUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         formset = context_data["option_formset"]
 
         if not formset.is_valid():
-            return super(QuestionUpdateView, self).form_invalid(form)
+            return super().form_invalid(form)
 
-        response = super(QuestionUpdateView, self).form_valid(form)
+        response = super().form_valid(form)
         formset.instance = self.get_object()
         formset.save()
 
@@ -155,7 +155,7 @@ class GameCreateView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         self.game = form.create_game()
 
-        return super(GameCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy("quizmaker:game_play", args=(self.game.uuid,))
@@ -180,7 +180,7 @@ class GameDetailView(LoginRequiredMixin, DetailView):
         )
 
     def get_context_data(self, **kwargs):
-        context_data = super(GameDetailView, self).get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
         correct_answers = self.object.gamequestion_set.filter(
             answer__is_right=True
         ).count()
@@ -202,16 +202,16 @@ class InGameFormView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         self.game = get_object_or_404(Game, uuid=kwargs["game_uuid"], is_ready=False)
 
-        return super(InGameFormView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
-        kwargs = super(InGameFormView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs.update({"instance": self.game.current_question})
 
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context_data = super(InGameFormView, self).get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
         context_data["question_number"] = self.game.current_question.order
         context_data["question_statement"] = self.game.current_question.question.statement
         context_data["question_image"] = self.game.current_question.question.image
@@ -221,7 +221,7 @@ class InGameFormView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     def form_valid(self, form):
         self.game = form.save()
 
-        return super(InGameFormView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         if not self.game.is_ready:
