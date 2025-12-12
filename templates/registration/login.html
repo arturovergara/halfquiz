@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+
+{% load widget_tweaks %}
+
+{% block layout %}
+<div id="page-wrapper" class="page-wrapper with-navbar with-sidebar with-navbar-fixed-bottom"
+  data-sidebar-type="overlayed-sm-and-down">
+  <div class="sticky-alerts"></div>
+  <nav class="navbar">
+    <span class="navbar-brand ml-10 ml-sm-20">Halfquiz</span>
+  </nav>
+  <div class="content-wrapper d-flex justify-content-center align-items-center">
+    {% if messages %}
+    {% include "partials/message_notification_toast.html" %}
+    {% endif %}
+    <div class="w-500 mw-full">
+      <div class="card">
+        <h2 class="card-title">
+          Login
+        </h2>
+        <form method="post" class="w-500 mw-full">
+          <div class="form-group">
+            <label for="{{ form.username.id_for_label }}" class="required">Username</label>
+            {% render_field form.username class+="form-control" %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.password.id_for_label }}" class="required">Password</label>
+            {% render_field form.password class+="form-control" %}
+          </div>
+          {# Include the hidden fields in the form #}
+          {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
+          {% csrf_token %}
+          <input class="btn btn-primary btn-block" type="submit" value="Login">
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <nav class="navbar navbar-fixed-bottom">
+    <span class="navbar-text">© Copyright {% now "Y" %}</span>
+  </nav>
+</div>
+{% endblock layout %}

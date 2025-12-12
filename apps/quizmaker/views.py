@@ -1,6 +1,7 @@
 # Django Imports
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Count
 from django.http.response import Http404
@@ -26,7 +27,7 @@ from .forms import (
 from .models import Game, Question, Topic
 
 
-class TopicListView(ListView):
+class TopicListView(LoginRequiredMixin, ListView):
     model = Topic
     context_object_name = "topics"
 
@@ -34,14 +35,14 @@ class TopicListView(ListView):
         return Topic.objects.annotate(questions_number=Count("questions")).order_by("id")
 
 
-class TopicCreateView(SuccessMessageMixin, CreateView):
+class TopicCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Topic
     form_class = TopicForm
     success_url = reverse_lazy("quizmaker:topic_list")
     success_message = "Topic was created successfully!"
 
 
-class TopicDeleteView(SuccessMessageMixin, DeleteView):
+class TopicDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Topic
     success_url = reverse_lazy("quizmaker:topic_list")
     success_message = "Topic was deleted successfully!"
@@ -50,19 +51,19 @@ class TopicDeleteView(SuccessMessageMixin, DeleteView):
         raise Http404("Only POST method available")
 
 
-class TopicUpdateView(SuccessMessageMixin, UpdateView):
+class TopicUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Topic
     form_class = TopicForm
     success_url = reverse_lazy("quizmaker:topic_list")
     success_message = "Topic was updated successfully!"
 
 
-class QuestionListView(ListView):
+class QuestionListView(LoginRequiredMixin, ListView):
     model = Question
     context_object_name = "questions"
 
 
-class QuestionCreateView(SuccessMessageMixin, CreateView):
+class QuestionCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Question
     form_class = QuestionForm
     success_url = reverse_lazy("quizmaker:question_list")
@@ -90,7 +91,7 @@ class QuestionCreateView(SuccessMessageMixin, CreateView):
         return response
 
 
-class QuestionBulkCreateView(SuccessMessageMixin, FormView):
+class QuestionBulkCreateView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     form_class = QuestionBulkCreateForm
     template_name = "quizmaker/question_bulk_form.html"
     success_url = reverse_lazy("quizmaker:question_list")
@@ -102,7 +103,7 @@ class QuestionBulkCreateView(SuccessMessageMixin, FormView):
         return super(QuestionBulkCreateView, self).form_valid(form)
 
 
-class QuestionDeleteView(SuccessMessageMixin, DeleteView):
+class QuestionDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Question
     success_url = reverse_lazy("quizmaker:question_list")
     success_message = "Question was deleted successfully!"
@@ -111,7 +112,7 @@ class QuestionDeleteView(SuccessMessageMixin, DeleteView):
         raise Http404("Only POST method available")
 
 
-class QuestionUpdateView(SuccessMessageMixin, UpdateView):
+class QuestionUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Question
     form_class = QuestionForm
     success_url = reverse_lazy("quizmaker:question_list")
@@ -141,12 +142,12 @@ class QuestionUpdateView(SuccessMessageMixin, UpdateView):
         return response
 
 
-class GameListView(ListView):
+class GameListView(LoginRequiredMixin, ListView):
     model = Game
     context_object_name = "games"
 
 
-class GameCreateView(FormView):
+class GameCreateView(LoginRequiredMixin, FormView):
     form_class = GameCreateForm
     template_name = "quizmaker/game_form.html"
     success_url = reverse_lazy("quizmaker:game_list")
@@ -160,7 +161,7 @@ class GameCreateView(FormView):
         return reverse_lazy("quizmaker:game_play", args=(self.game.uuid,))
 
 
-class GameDeleteView(SuccessMessageMixin, DeleteView):
+class GameDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Game
     success_url = reverse_lazy("quizmaker:game_list")
     success_message = "Game was deleted successfully!"
@@ -169,7 +170,7 @@ class GameDeleteView(SuccessMessageMixin, DeleteView):
         raise Http404("Only POST method available")
 
 
-class GameDetailView(DetailView):
+class GameDetailView(LoginRequiredMixin, DetailView):
     model = Game
     context_object_name = "game"
 
@@ -194,7 +195,7 @@ class GameDetailView(DetailView):
         return context_data
 
 
-class InGameFormView(SuccessMessageMixin, FormView):
+class InGameFormView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     form_class = InGameQuestionForm
     template_name = "quizmaker/ingame_form.html"
 
