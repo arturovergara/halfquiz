@@ -149,7 +149,7 @@ class InGameQuestionForm(forms.ModelForm):
         self.fields["answer"].empty_label = None
         self.fields["answer"].queryset = Option.objects.filter(
             question=self.instance.question
-        )
+        ).order_by("?")
 
     def save(self, commit=True):
         game_question = super().save(commit)
