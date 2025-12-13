@@ -1,5 +1,9 @@
 {% extends "quizmaker/base.html" %}
 
+{% block title %}
+  Questions | Halfquiz
+{% endblock title %}
+
 {% block content %}
   <div class="container-fluid">
     <div class="row row-eq-spacing-lg">
@@ -29,6 +33,7 @@
               </div>
             </div>
           </div>
+          <div class="table-responsive">
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -43,7 +48,7 @@
               {% for question in questions %}
                 <tr>
                   <th>{{ forloop.counter }}</th>
-                  <td>{{ question.statement }}</td>
+                  <td class="text-wrap text-250">{{ question.statement }}</td>
                   <td>{{ question.topic }}</td>
                   <td>{{ question.time_seconds }}s</td>
                   <td class="text-right">
@@ -61,6 +66,7 @@
               {% endfor %}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>

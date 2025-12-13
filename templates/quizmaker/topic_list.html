@@ -1,5 +1,9 @@
 {% extends "quizmaker/base.html" %}
 
+{% block title %}
+  Topics | Halfquiz
+{% endblock title %}
+
 {% block content %}
   <div class="container-fluid">
     <div class="row row-eq-spacing-lg">
@@ -13,38 +17,40 @@
             <a href="{% url 'quizmaker:topic_create' %}"
                class="btn btn-success text-white">New Topic</a>
           </div>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th># Questions</th>
-                <th class="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for topic in topics %}
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
                 <tr>
-                  <th>{{ forloop.counter }}</th>
-                  <td>{{ topic.name }}</td>
-                  <td>{{ topic.description }}</td>
-                  <td>{{ topic.questions_number }}</td>
-                  <td class="text-right">
-                    <a href="{% url 'quizmaker:topic_update' topic.id %}"
-                       class="btn btn-secondary">
-                      <i class="bx bxs-edit-alt"></i>
-                    </a>
-                    <button class="btn btn-danger"
-                            type="button"
-                            onclick="deleteTopic({{ topic.id }})">
-                      <i class="bx bxs-trash-alt"></i>
-                    </button>
-                  </td>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th># Questions</th>
+                  <th class="text-right">Actions</th>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {% for topic in topics %}
+                  <tr>
+                    <th>{{ forloop.counter }}</th>
+                    <td>{{ topic.name }}</td>
+                    <td>{{ topic.description }}</td>
+                    <td>{{ topic.questions_number }}</td>
+                    <td class="text-right">
+                      <a href="{% url 'quizmaker:topic_update' topic.id %}"
+                         class="btn btn-secondary">
+                        <i class="bx bxs-edit-alt"></i>
+                      </a>
+                      <button class="btn btn-danger"
+                              type="button"
+                              onclick="deleteTopic({{ topic.id }})">
+                        <i class="bx bxs-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

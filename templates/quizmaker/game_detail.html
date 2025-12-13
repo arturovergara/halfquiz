@@ -1,5 +1,9 @@
 {% extends "quizmaker/base.html" %}
 
+{% block title %}
+  Games | Halfquiz
+{% endblock title %}
+
 {% block content %}
   <div class="container-fluid">
     <div class="row row-eq-spacing-lg">
@@ -27,26 +31,28 @@
           <div class="d-flex">
             <h2 class="card-title flex-grow-1">Questions Review</h2>
           </div>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Question Statement</th>
-                <th>Correct Answer</th>
-                <th>Your Answer</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for game_question in game.gamequestion_set.all %}
-                <tr class="table-{% if game_question.answer.is_right %}success{% else %}danger{% endif %}">
-                  <th>{{ forloop.counter }}</th>
-                  <td>{{ game_question.question.statement }}</td>
-                  <td>{{ game_question.question.correct_option.text }}</td>
-                  <td>{{ game_question.answer.text }}</td>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Question Statement</th>
+                  <th>Correct Answer</th>
+                  <th>Your Answer</th>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {% for game_question in game.gamequestion_set.all %}
+                  <tr class="table-{% if game_question.answer.is_right %}success{% else %}danger{% endif %}">
+                    <th>{{ forloop.counter }}</th>
+                    <td class="text-wrap w-250">{{ game_question.question.statement }}</td>
+                    <td class="text-wrap w-250">{{ game_question.question.correct_option.text }}</td>
+                    <td class="text-wrap w-250">{{ game_question.answer.text }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

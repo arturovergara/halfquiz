@@ -3,6 +3,10 @@
 {% load widget_tweaks %}
 {% load quiz_utils %}
 
+{% block title %}
+  Games | Halfquiz
+{% endblock title %}
+
 {% block morelinks %}
   <style>
     .option label {
@@ -108,7 +112,7 @@
        data-sidebar-type="overlayed-sm-and-down">
     <div class="sticky-alerts"></div>
     <nav class="navbar">
-      <span class="navbar-brand ml-10 ml-sm-20">Halfquiz</span>
+      <a href="{% url 'quizmaker:home' %}" class="navbar-brand ml-10 ml-sm-20">Halfquiz</a>
     </nav>
     <div class="content-wrapper">
       {% if messages %}
@@ -122,12 +126,15 @@
             </div>
             <div class="card">
               <h2 class="card-title">
-                <span>{{ question_number }}.</span> {{ question_statement|linebreaks }}
+                Question #{{ question_number }}
               </h2>
-              {% if question_image %}
-              <div class="d-flex justify-content-center">
-                <img src="{{ question_image.url }}" />
+              <div class="font-size-16">
+                {{ question_statement|linebreaks }}
               </div>
+              {% if question_image %}
+                <div class="text-center">
+                  <img src="{{ question_image.url }}" class="img-fluid rounded" alt="Question Image">
+                </div>
               {% endif %}
               <form method="post">
                 <div class="container-fluid">

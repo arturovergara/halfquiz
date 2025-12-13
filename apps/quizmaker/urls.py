@@ -41,5 +41,5 @@ urlpatterns = [
     path("games/<uuid:game_uuid>/review/", GameDetailView.as_view(), name="game_review"),
     path("games/add/", GameCreateView.as_view(), name="game_create"),
     path("games/", GameListView.as_view(), name="game_list"),
-    path("", RedirectView.as_view(url=reverse_lazy("quizmaker:topic_list")), name="home"),
+    path("", RedirectView.as_view(url=reverse_lazy("quizmaker:game_list")), name="home"),
 ]

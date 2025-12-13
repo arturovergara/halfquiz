@@ -1,5 +1,9 @@
 {% extends "quizmaker/base.html" %}
 
+{% block title %}
+  Games | Halfquiz
+{% endblock title %}
+
 {% block content %}
   <div class="container-fluid">
     <div class="row row-eq-spacing-lg">
@@ -9,47 +13,47 @@
         </div>
         <div class="card">
           <div class="d-flex">
-            <h2 class="card-title flex-grow-1">Game Results List</h2>
+            <h2 class="card-title flex-grow-1">Game Results</h2>
             <a href="{% url 'quizmaker:game_create' %}"
                class="btn btn-success text-white">New Game</a>
           </div>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th class="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for game in games %}
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
                 <tr>
-                  <th>{{ forloop.counter }}</th>
-                  <td>{{ game.name }}</td>
-                  <td>{{ game.is_ready|yesno:"Done,In Progress" }}</td>
-                  <td class="text-right">
-                    {% if game.is_ready %}
-                    <a href="{% url 'quizmaker:game_review' game.uuid %}"
-                       class="btn btn-success">
-                      <i class="bx bxs-file-find"></i>
-                    </a>
-                    {% else %}
-                    <a href="{% url 'quizmaker:game_play' game.uuid %}"
-                       class="btn btn-primary">
-                      <i class="bx bxs-right-arrow"></i>
-                    </a>
-                    {% endif %}
-                    <button type="button"
-                            class="btn btn-danger"
-                            onclick="deleteGame({{ game.id }})">
-                      <i class="bx bxs-trash-alt"></i>
-                    </button>
-                  </td>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th class="text-right">Actions</th>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {% for game in games %}
+                  <tr>
+                    <td>{{ game.name }}</td>
+                    <td>{{ game.is_ready|yesno:"Done,In Progress" }}</td>
+                    <td class="text-right">
+                      {% if game.is_ready %}
+                      <a href="{% url 'quizmaker:game_review' game.uuid %}"
+                         class="btn btn-success">
+                        <i class="bx bxs-file-find"></i>
+                      </a>
+                      {% else %}
+                      <a href="{% url 'quizmaker:game_play' game.uuid %}"
+                         class="btn btn-primary">
+                        <i class="bx bxs-right-arrow"></i>
+                      </a>
+                      {% endif %}
+                      <button type="button"
+                              class="btn btn-danger"
+                              onclick="deleteGame({{ game.id }})">
+                        <i class="bx bxs-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

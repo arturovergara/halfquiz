@@ -143,7 +143,7 @@ class QuestionUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 
 class GameListView(LoginRequiredMixin, ListView):
-    model = Game
+    queryset = Game.objects.order_by("-created_at")
     context_object_name = "games"
 
 
