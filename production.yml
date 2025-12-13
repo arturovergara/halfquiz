@@ -12,6 +12,8 @@ services:
       - halfquiz_media:/app/media
       - ./compose/production/nginx/halfquiz.conf:/etc/nginx/nginx.conf:ro
       - ./compose/production/nginx/ssl.conf:/etc/nginx/vhost.ssl.conf:ro
+      - ./compose/production/nginx/certs/halfquiz.cert.pem:/etc/nginx/ssl/halfquiz.cert.pem:ro
+      - ./compose/production/nginx/certs/halfquiz.key.pem:/etc/nginx/ssl/halfquiz.key.pem:ro
     depends_on:
       - app
   app:
