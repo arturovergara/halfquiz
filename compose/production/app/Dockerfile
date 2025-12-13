@@ -45,11 +45,11 @@ COPY ./compose/production/app/start.sh $HOME/start.sh
 RUN sed -i 's/\r$//g' $HOME/start.sh && chmod +x $HOME/start.sh
 
 # Copy only the necessary project files (order matters due to cache optimization)
-COPY --chown=halfuser:halfuser src/app/manage.py $APP_HOME/manage.py
-COPY --chown=halfuser:halfuser src/app/static/ $APP_HOME/static/
-COPY --chown=halfuser:halfuser src/app/config/ $APP_HOME/config/
-COPY --chown=halfuser:halfuser src/app/templates/ $APP_HOME/templates/
-COPY --chown=halfuser:halfuser src/app/apps/ $APP_HOME/apps/
+COPY --chown=halfuser:halfuser manage.py $APP_HOME/manage.py
+COPY --chown=halfuser:halfuser static/ $APP_HOME/static/
+COPY --chown=halfuser:halfuser config/ $APP_HOME/config/
+COPY --chown=halfuser:halfuser templates/ $APP_HOME/templates/
+COPY --chown=halfuser:halfuser apps/ $APP_HOME/apps/
 
 # Change to the non-root user
 USER halfuser
