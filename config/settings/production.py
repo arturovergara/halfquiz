@@ -13,6 +13,7 @@ CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
 # Database
 DATABASE_DIR = BASE_DIR.parent / "sqlite-data"
 DATABASES["default"]["NAME"] = DATABASE_DIR / "db.sqlite3"  # noqa: F405
+CONN_MAX_AGE = 0
 
 # Admin
 ADMIN_URL = env("DJANGO_ADMIN_URL")
