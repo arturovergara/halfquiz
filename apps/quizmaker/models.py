@@ -123,7 +123,7 @@ class Game(models.Model):
 
     @property
     def name(self) -> str:
-        timestamp = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = timezone.localtime(self.created_at).strftime("%Y-%m-%d %H:%M:%S")
 
         return f"Test {timestamp}"
 
