@@ -151,6 +151,14 @@ class InGameQuestionForm(forms.ModelForm):
             question=self.instance.question
         ).order_by("?")
 
+    def clean_answer(self):
+        answer = self.cleaned_data.get("answer")
+
+        if answer is None:
+            raise ValidationError("Select a valid option.")
+
+        return answer
+
     def save(self, commit=True):
         game_question = super().save(commit)
         game_question.game.answer_question()
