@@ -39,6 +39,41 @@ class GameManager(models.Manager):
 
         return game
 
+    def create_all_possible_random_games(self):
+        def split_list(source_list: list, size: int) -> list[list]:
+            output = []
+
+            while len(source_list) > size:
+                pice = source_list[:size]
+                output.append(pice)
+                source_list = source_list[size:]
+
+            output.append(source_list)
+
+            return output
+
+        from time import sleep
+
+        topic = Topic.objects.first()
+        questions = Question.objects.filter(topic=topic)
+        questions_length = questions.count()
+        random_numbers = random.sample(range(questions_length), questions_length)
+        random_games = split_list(random_numbers, 35)
+
+        for random_game in random_games:
+            game = self.create()
+            random_questions = [
+                GameQuestion(question=questions[idx], order=i, game=game)
+                for i, idx in enumerate(random_game, start=1)
+            ]
+
+            GameQuestion.objects.bulk_create(random_questions)
+            game.current_question = GameQuestion.objects.get(order=1, game=game)
+            game.show_answer = False
+            game.save()
+
+            sleep(1)
+
 
 class Topic(models.Model):
     name = models.CharField(max_length=100)
