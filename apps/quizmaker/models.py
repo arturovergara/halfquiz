@@ -52,6 +52,7 @@ class GameManager(models.Manager):
 
             return output
 
+        # Standard Libraries
         from time import sleep
 
         topic = Topic.objects.first()
@@ -73,6 +74,37 @@ class GameManager(models.Manager):
             game.save()
 
             sleep(1)
+
+    def create_game_with_previous_wrong_questions(self):
+        wrong_questions_idx = set(
+            GameQuestion.objects.filter(
+                models.Q(answer__is_right=False) | models.Q(answer__isnull=True)
+            ).values_list("question__id", flat=True)
+        )
+        wrong_questions = Question.objects.filter(id__in=wrong_questions_idx)
+        topic = Topic.objects.first()
+        questions = Question.objects.filter(topic=topic).exclude(
+            id__in=wrong_questions_idx
+        )
+        questions_length = questions.count()
+
+        game = self.create()
+        random_numbers = random.sample(
+            range(questions_length), 35 - wrong_questions.count()
+        )
+        retry_questions = [
+            GameQuestion(question=question, order=i, game=game)
+            for i, question in enumerate(wrong_questions, start=1)
+        ]
+        random_questions = [
+            GameQuestion(question=questions[idx], order=i, game=game)
+            for i, idx in enumerate(random_numbers, start=wrong_questions.count() + 1)
+        ]
+
+        GameQuestion.objects.bulk_create(retry_questions + random_questions)
+        game.current_question = GameQuestion.objects.get(order=1, game=game)
+        game.show_answer = False
+        game.save()
 
 
 class Topic(models.Model):
